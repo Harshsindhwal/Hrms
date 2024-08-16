@@ -16,19 +16,14 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import EditIcon from '@mui/icons-material/Edit';
 
 function createData(Id, Name, Department, Positions, Email) {
   return {
@@ -90,7 +85,6 @@ const headCells = [
   { id: 'Department', numeric: false, disablePadding: false, label: 'Department' },
   { id: 'Positions', numeric: false, disablePadding: false, label: 'Positions' },
   { id: 'Email', numeric: false, disablePadding: false, label: 'Email' },
-  { id: 'actions', numeric: false, disablePadding: false, label: 'Actions' },
 ];
 
 function EnhancedTableHead(props) {
@@ -102,7 +96,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox" sx={{ padding: '0 4px' }}>
+        <TableCell padding="checkbox">
           <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -111,16 +105,14 @@ function EnhancedTableHead(props) {
             inputProps={{
               'aria-label': 'select all employees',
             }}
-            size="small"
           />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            padding='normal'
+            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ padding: '4px' }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -150,80 +142,8 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-function NewEmployeeForm({ onClose, onSubmit }) {
-  const [newEmployee, setNewEmployee] = React.useState({
-    Name: '',
-    Department: '',
-    Positions: '',
-    Email: '',
-  });
-
-  const handleChange = (event) => {
-    setNewEmployee({ ...newEmployee, [event.target.name]: event.target.value });
-  };
-
-  const handleSubmit = () => {
-    onSubmit(newEmployee);
-    onClose();
-  };
-
-  return (
-    <>
-      <DialogTitle>Add New Employee</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          margin="dense"
-          name="Name"
-          label="Name"
-          type="text"
-          fullWidth
-          variant="standard"
-          value={newEmployee.Name}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="dense"
-          name="Department"
-          label="Department"
-          type="text"
-          fullWidth
-          variant="standard"
-          value={newEmployee.Department}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="dense"
-          name="Positions"
-          label="Position"
-          type="text"
-          fullWidth
-          variant="standard"
-          value={newEmployee.Positions}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="dense"
-          name="Email"
-          label="Email"
-          type="email"
-          fullWidth
-          variant="standard"
-          value={newEmployee.Email}
-          onChange={handleChange}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit}>Add</Button>
-      </DialogActions>
-    </>
-  );
-}
-
 function EnhancedTableToolbar(props) {
-  const { numSelected, onSearchChange, onAddNewEmployee, onDeleteSelected } = props;
-  const [openNewEmployeeModal, setOpenNewEmployeeModal] = React.useState(false);
+  const { numSelected, onSearchChange } = props;
 
   return (
     <Toolbar
@@ -237,21 +157,14 @@ function EnhancedTableToolbar(props) {
       }}
     >
       {numSelected > 0 ? (
-        <>
-          <Tooltip title="Delete">
-            <IconButton onClick={onDeleteSelected}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-          <Typography
-            sx={{ flex: '1 1 100%' }}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
-            {numSelected} selected
-          </Typography>
-        </>
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {numSelected} selected
+        </Typography>
       ) : (
         <Typography
           sx={{ flex: '1 1 100%' }}
@@ -277,22 +190,19 @@ function EnhancedTableToolbar(props) {
         }}
       />
 
-      <Button variant="contained"
-        onClick={() => setOpenNewEmployeeModal(true)}
-        sx={{ ml: 2, fontSize: '0.85rem', padding: '6px 10px' }}
-      >
-        + Add 
-      </Button>
-
-      <Dialog open={openNewEmployeeModal} onClose={() => setOpenNewEmployeeModal(false)}>
-        <NewEmployeeForm 
-          onClose={() => setOpenNewEmployeeModal(false)} 
-          onSubmit={(newEmployee) => {
-            onAddNewEmployee(newEmployee);
-            setOpenNewEmployeeModal(false);
-          }} 
-        />
-      </Dialog>
+      {numSelected > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </Toolbar>
   );
 }
@@ -300,8 +210,6 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onSearchChange: PropTypes.func.isRequired,
-  onAddNewEmployee: PropTypes.func.isRequired,
-  onDeleteSelected: PropTypes.func.isRequired,
 };
 
 export default function EnhancedTable() {
@@ -309,14 +217,9 @@ export default function EnhancedTable() {
   const [orderBy, setOrderBy] = React.useState('Name');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(30);
+  const [dense, setDense] = React.useState(false);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [employeeData, setEmployeeData] = React.useState(rows);
-  const [editingId, setEditingId] = React.useState(null);
-  const [editedEmployee, setEditedEmployee] = React.useState({});
-  const [editingCell, setEditingCell] = React.useState({ id: null, field: null });
-  const [editedValue, setEditedValue] = React.useState('');
-  const [dense, setDense] = React.useState(true);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -326,7 +229,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = employeeData.map((n) => n.Id);
+      const newSelected = rows.map((n) => n.Id);
       setSelected(newSelected);
       return;
     }
@@ -362,60 +265,18 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
+  const handleChangeDense = (event) => {
+    setDense(event.target.checked);
+  };
+
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
     setPage(0);
   };
 
-  const handleAddNewEmployee = (newEmployee) => {
-    const newId = Math.max(...employeeData.map(e => e.Id)) + 1;
-    setEmployeeData([...employeeData, { ...newEmployee, Id: newId }]);
-  };
-
-
-  const handleEditCell = (id, field, value) => {
-    setEditingCell({ id, field });
-    setEditedValue(value);
-  };
-  
-  const handleSaveEdit = () => {
-    setEmployeeData(employeeData.map(employee => 
-      employee.Id === editingCell.id 
-        ? { ...employee, [editingCell.field]: editedValue } 
-        : employee
-    ));
-    setEditingCell({ id: null, field: null });
-    setEditedValue('');
-  };
-  
-  const handleCancelEdit = () => {
-    setEditingCell({ id: null, field: null });
-    setEditedValue('');
-  };
-
-
-  const handleEditChange = (event) => {
-    setEditedValue(event.target.value);
-  };
-
-
-
-  const handleDeleteEmployee = (id) => {
-    setEmployeeData(employeeData.filter(employee => employee.Id !== id));
-  };
-
-  const handleDeleteSelected = () => {
-    setEmployeeData(employeeData.filter(employee => !selected.includes(employee.Id)));
-    setSelected([]);
-  };
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const filteredRows = employeeData.filter((row) =>
+  const filteredRows = rows.filter((row) =>
     Object.values(row).some((value) =>
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -434,19 +295,14 @@ export default function EnhancedTable() {
   );
 
   return (
-    <Box sx={{ width: '100%', fontSize: '0.85rem' }}>
+    <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar 
-          numSelected={selected.length} 
-          onSearchChange={handleSearchChange}
-          onAddNewEmployee={handleAddNewEmployee}
-          onDeleteSelected={handleDeleteSelected}
-        />
+        <EnhancedTableToolbar numSelected={selected.length} onSearchChange={handleSearchChange} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size="small"
+            size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
               numSelected={selected.length}
@@ -460,7 +316,6 @@ export default function EnhancedTable() {
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.Id);
                 const labelId = `enhanced-table-checkbox-${index}`;
-                const isEditing = editingId === row.Id;
 
                 return (
                   <TableRow
@@ -471,102 +326,35 @@ export default function EnhancedTable() {
                     tabIndex={-1}
                     key={row.Id}
                     selected={isItemSelected}
-                    sx={{ 
-                      '&:nth-of-type(odd)': { backgroundColor: '#f5f5f5' },
-                      '&:nth-of-type(even)': { backgroundColor: '#ffffff' },
-                    }}
                   >
-                    <TableCell padding="checkbox" sx={{ padding: '0 4px' }}>
+                    <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
                         inputProps={{
                           'aria-labelledby': labelId,
                         }}
-                        size="small"
                       />
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" sx={{ padding: '4px', fontSize: '0.8rem' }}>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                    >
                       {row.Id}
                     </TableCell>
-                    <TableCell align="left" sx={{ padding: '4px', fontSize: '0.8rem' }}>
-                      {isEditing ? (
-                        <TextField
-                          name="Name"
-                          value={editedEmployee.Name || row.Name}
-                          onChange={handleEditChange}
-                          variant="standard"
-                          size="small"
-                        />
-                      ) : row.Name}
-                    </TableCell>
-                    <TableCell align="left" sx={{ padding: '4px', fontSize: '0.8rem' }}>
-                      {isEditing ? (
-                        <TextField
-                          name="Department"
-                          value={editedEmployee.Department || row.Department}
-                          onChange={handleEditChange}
-                          variant="standard"
-                          size="small"
-                        />
-                      ) : row.Department}
-                    </TableCell>
-                    <TableCell align="left" sx={{ padding: '4px', fontSize: '0.8rem' }}>
-                      {isEditing ? (
-                        <TextField
-                          name="Positions"
-                          value={editedEmployee.Positions || row.Positions}
-                          onChange={handleEditChange}
-                          variant="standard"
-                          size="small"
-                        />
-                      ) : row.Positions}
-                    </TableCell>
-                    <TableCell align="left" sx={{ padding: '4px', fontSize: '0.8rem' }}>
-                      {isEditing ? (
-                        <TextField
-                          name="Email"
-                          value={editedEmployee.Email || row.Email}
-                          onChange={handleEditChange}
-                          variant="standard"
-                          size="small"
-                        />
-                      ) : row.Email}
-                    </TableCell>
-                    <TableCell align="left" sx={{ padding: '4px', fontSize: '0.8rem' }}>
-                      {isEditing ? (
-                        <>
-                          <IconButton onClick={handleSaveEdit} size="small">
-                            <SaveIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton onClick={handleCancelEdit} size="small">
-                            <CancelIcon fontSize="small" />
-                          </IconButton>
-                        </>
-                      ) : (
-                        <>
-                          <IconButton onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditEmployee(row.Id);
-                          }} size="small">
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteEmployee(row.Id);
-                          }} size="small">
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </>
-                      )}
-                    </TableCell>
+                    <TableCell align="left">{row.Name}</TableCell>
+                    <TableCell align="left">{row.Department}</TableCell>
+                    <TableCell align="left">{row.Positions}</TableCell>
+                    <TableCell align="left">{row.Email}</TableCell>
                   </TableRow>
                 );
               })}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: 33 * emptyRows,
+                    height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />
@@ -576,14 +364,13 @@ export default function EnhancedTable() {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 30, 50]}
+          rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={filteredRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{ fontSize: '0.85rem' }}
         />
       </Paper>
       <FormControlLabel

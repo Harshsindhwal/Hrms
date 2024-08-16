@@ -104,7 +104,7 @@ function EnhancedTableHead(props) {
           <TableCell
             key={headCell.id}
             align='left'
-            padding={headCell.disablePadding ? 'none' : 'normal'} 
+            padding={headCell.disablePadding ? 'none' : 'normal'}  // Adjusted padding for ID column
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -210,7 +210,7 @@ export default function EnhancedTable() {
   const [orderBy, setOrderBy] = React.useState('Department');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(true);
+  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchTerm, setSearchTerm] = React.useState('');
 
@@ -274,7 +274,7 @@ export default function EnhancedTable() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar
           numSelected={selected.length}
           onSearchChange={(e) => setSearchTerm(e.target.value)}

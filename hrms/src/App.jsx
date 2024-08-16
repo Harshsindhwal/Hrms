@@ -10,11 +10,14 @@ import PasswordReset from "./pages/auth/PasswordReset";
 import PasswordResetConfirmation from "./pages/auth/PasswordResetConfirmation";
 import EmployeeDirectory from "./pages/employee/EmployeeDirectory";
 import EmployeeProfile from "./pages/employee/EmployeeProfile";
+import AddEditEmployee from "./pages/employee/AddEditEmployee";
 import DepartmentManagement from "./pages/department/DepartmentManagement";
 import LeaveRequest from "./pages/leave/LeaveRequest";
 import LeaveApproval from "./pages/leave/LeaveApproval";
 import LeaveHistory from "./pages/leave/LeaveHistory";
 import PayrollDashboard from "./pages/payroll/PayrollDashboard";
+import PayrollRecords from "./pages/payroll/PayrollRecords";
+import PayrollReport from "./pages/payroll/PayrollReport";
 import PerformanceReview from "./pages/performance/PerformanceReview";
 import PerformanceAnalytics from "./pages/performance/PerformanceAnalytics";
 import EmployeeReports from "./pages/reports/EmployeeReports";
@@ -28,7 +31,6 @@ import Documentation from "./pages/help/Documentation";
 import NotificationCenter from "./pages/notification/NotificationCenter";
 import ErrorPage from "./pages/error/ErrorPage";
 import MaintenancePage from "./pages/maintenance/MaintenancePage";
-import PayrollManagement from "./pages/payroll/PayrollManagement";
 
 
 // import { onAuthStateChanged } from 'firebase/auth';
@@ -109,6 +111,10 @@ function App() {
                 element={user ? <EmployeeProfile /> : <Navigate to="/login" />}
               />
               <Route
+                path="/add-edit-employee"
+                element={user ? <AddEditEmployee /> : <Navigate to="/login" />}
+              />
+              <Route
                 path="/departments"
                 element={
                   user ? <DepartmentManagement /> : <Navigate to="/login" />
@@ -132,7 +138,11 @@ function App() {
               />
               <Route
                 path="/payroll-records"
-                element={user ? <PayrollManagement /> : <Navigate to="/login" />}
+                element={user ? <PayrollRecords /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/payroll-reports"
+                element={user ? <PayrollReport /> : <Navigate to="/login" />}
               />
               <Route
                 path="/performance-review"
@@ -182,9 +192,7 @@ function App() {
               />
               <Route
                 path="/notifications"
-                element={
-                  user ? <NotificationCenter /> : <Navigate to="/login" />
-                }
+                element={user ? <NotificationCenter /> : <Navigate to="/login" />}
               />
               <Route path="/error" element={<ErrorPage />} />
               <Route path="/maintenance" element={<MaintenancePage />} />

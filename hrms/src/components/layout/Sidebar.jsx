@@ -20,11 +20,15 @@ import HelpIcon from "@mui/icons-material/Help";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import FolderIcon from "@mui/icons-material/Folder";
+import EditIcon from "@mui/icons-material/Edit";
 import BusinessIcon from "@mui/icons-material/Business";
 import SendIcon from "@mui/icons-material/Send";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import HistoryIcon from "@mui/icons-material/History";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import StarIcon from "@mui/icons-material/Star";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import PersonIcon from "@mui/icons-material/Person";
@@ -48,24 +52,14 @@ function Sidebar() {
     }));
   };
 
-
   const handleLogout = async () => {
-    console.log('Logout button clicked'); // Add this line to check if the function is triggered
-    try {
-      await signOut(auth);
+    // try {
+      // await signOut(auth);
       navigate('/login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
+    // } catch (error) {
+    //   console.error('Error logging out:', error);
+    // }
   };
-  
-  
-
-  // const handleLogout = () => {
-  //   logout();
-  //   handleClose();
-  //   navigate('/login');
-  // };
 
   const menuItems = [
     {
@@ -76,12 +70,11 @@ function Sidebar() {
     {
       name: "Employee Management",
       icon: <PeopleIcon />,
-      link: "/employee-directory" ,
-    },
-    {
-      name: "Department Management",
-      icon: <BusinessIcon />,
-      link: "/departments",
+      submenus: [
+        { name: "Employee Directory", icon: <FolderIcon />, link: "/employee-directory" },
+        { name: "Add/Edit Employee", icon: <EditIcon />, link: "/add-edit-employee" },
+        { name: "Departments", icon: <BusinessIcon />, link: "/departments" },
+      ],
     },
     {
       name: "Leave Management",
@@ -92,17 +85,14 @@ function Sidebar() {
         { name: "Leave History", icon: <HistoryIcon />, link: "/leave-history" },
       ],
     },
-    {    
-        name: "Payroll Dashboard", 
-        icon: <DashboardCustomizeIcon />,
-        link: "/payroll-dashboard" 
-
-    
-    },
     {
       name: "Payroll Management",
       icon: <AttachMoneyIcon />,
-      link: "/payroll-records" 
+      submenus: [
+        { name: "Payroll Dashboard", icon: <DashboardCustomizeIcon />, link: "/payroll-dashboard" },
+        { name: "Payroll Records", icon: <ReceiptIcon />, link: "/payroll-records" },
+        { name: "Payroll Reports", icon: <BarChartIcon />, link: "/payroll-reports" },
+      ],
     },
     {
       name: "Performance Management",
@@ -118,6 +108,7 @@ function Sidebar() {
       submenus: [
         { name: "Employee Reports", icon: <PeopleIcon />, link: "/employee-reports" },
         { name: "Leave Reports", icon: <EventNoteIcon />, link: "/leave-reports" },
+        { name: "Payroll Reports", icon: <AttachMoneyIcon />, link: "/payroll-reports" },
         { name: "Performance Reports", icon: <AssessmentIcon />, link: "/performance-reports" },
       ],
     },
