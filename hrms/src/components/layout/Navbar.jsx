@@ -6,12 +6,13 @@ import {
   IconButton,
   Menu,
   MenuItem,
-
+  Badge,
 } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
-function Navbar({ logout }) {
+function Navbar({ logout, notificationCount }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
@@ -29,6 +30,10 @@ function Navbar({ logout }) {
     navigate('/login');
   };
 
+  const handleNotificationClick = () => {
+    navigate('/notifications');
+  }
+
   return (
     <AppBar position="fixed">
       <Toolbar>
@@ -36,6 +41,16 @@ function Navbar({ logout }) {
           HR Management System
         </Typography>
         <div>
+          <IconButton 
+            size="large"
+            aria-label="show notifications"
+            color="inherit"
+            onClick={handleNotificationClick}
+          >
+            <Badge color="error">
+            <NotificationsIcon />
+            </Badge>
+          </IconButton>
           <IconButton
             size="large"
             aria-label="account of current user"
